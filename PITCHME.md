@@ -191,7 +191,6 @@ AIとは
 
 ### 機械学習の学習手法による分類
 
-<!-- ![機械学習の学習手法による分類は？](image/kind-ml.png) -->
----?image=image/kind-ml.png.file&size=auto 50%
+![機械学習の学習手法による分類は？](image/kind-ml.png.file&size=auto 90%)
 
 ### おわり

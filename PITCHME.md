@@ -23,7 +23,7 @@
 
 ### 人工知能とは
 
-![人工知能とは何？](https://gitpitch.com/TakuKitamura/MachineLearning/AI_Seminer/2017_08_07/image)
+![人工知能とは何？](https://gitpitch.com/TakuKitamura/machine-learning-seminer/image/what-ai.png)
 
 
 ---

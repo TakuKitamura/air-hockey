@@ -24,7 +24,7 @@
 
 ### 人工知能とは
 
-![人工知能とは何？](machine-learning-seminer/image/what-ai.png)
+![人工知能とは何？](https://github.com/TakuKitamura/machine-learning-seminer/blob/master/image/what-ai.png)
 
 
 ---

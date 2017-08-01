@@ -94,3 +94,16 @@ double Pysics::afterElasticCollisionV( double e, double v ) {
 double Math::distanceBetweenTwoPoints( double xa, double ya, double xb, double yb ) {
     return sqrt( pow( xb - xa, 2.0 ) + pow( yb - ya, 2.0 ) );
 }
+
+double Math::innerProduct( double xa, double ya, double xb, double yb ) {
+    return ( xa * xb ) + ( ya * yb );
+}
+
+double Math::formedAngle( double xa, double ya, double xb, double yb ) {
+    return cos(
+        Math::innerProduct( xa, ya, xb, yb ) /
+            ( Math::distanceBetweenTwoPoints( xa , xb , 0 , 0 ) *
+            Math::distanceBetweenTwoPoints( 0 , 0 , xb , xb )
+            )
+    );
+}

@@ -11,7 +11,7 @@ using namespace std;
 #define PM 10  // パックの質量
 #define MR 5   // マレット半径
 #define PR 3   // パック半径
-#define E  0.5 // 反発係数
+#define E  1.5 // 反発係数
 #define MU 0.5 // 動摩擦係数
 
 using namespace std;
@@ -56,6 +56,10 @@ class Math {
 
 public:
     double distanceBetweenTwoPoints( double xa, double ya, double xb, double yb );
+
+    double innerProduct( double xa, double ya, double xb, double yb );
+
+    double formedAngle( double xa, double ya, double xb, double yb );
 
 };
 

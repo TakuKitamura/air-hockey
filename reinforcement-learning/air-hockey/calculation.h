@@ -5,13 +5,13 @@
 
 using namespace std;
 
-#define OX 0   // 位置ベクトル x
-#define OY 0   // 位置ベクトル y
+// #define OX 0   // 位置ベクトル x
+// #define OY 0   // 位置ベクトル y
 #define MM 100 // マレットの質量
 #define PM 10  // パックの質量
 #define MR 5   // マレット半径
 #define PR 3   // パック半径
-#define E  1.5 // 反発係数
+#define E  0.75 // 反発係数
 #define MU 0.5 // 動摩擦係数
 
 using namespace std;

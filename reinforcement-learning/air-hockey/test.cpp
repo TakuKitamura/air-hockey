@@ -1,6 +1,6 @@
-// cout << phy.pysicalEnergy("x",1.0,1.0) << endl;
-// cout << phy.pysicalEnergy(1.0,"x",1.0) << endl;
-// cout << phy.pysicalEnergy(1.0,1.0,"x") << endl;
+// cout << phy.physicalEnergy("x",1.0,1.0) << endl;
+// cout << phy.physicalEnergy(1.0,"x",1.0) << endl;
+// cout << phy.physicalEnergy(1.0,1.0,"x") << endl;
 
 // cout << phy.acceleratedMotionExecptY("x",1.0,1.0,1.0) << endl;
 // cout << phy.acceleratedMotionExecptY(1.0,"x",1.0,1.0) << endl;

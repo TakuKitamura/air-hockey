@@ -31,15 +31,15 @@ double Physics::dynamicFriction( double f, double mu, string target ) {
     return f / mu;
 }
 
-double Physics::afterSpeedOnFriction ( string target, double now_v ) {
-    
+double Physics::afterSpeedOnFriction ( string target, double now_v, double mu ) {
+
     // 平方根が存在しない時
-    if( 2 * MU * G  > pow( now_v, 2 ) ) {
+    if( 2 * mu * G  > pow( now_v, 2 ) ) {
         // printf("NO SQUARE ROOT!\n");
         return 0.0;
     }
 
-    return sqrt( pow( now_v, 2 ) - ( 2 * MU * G ) );
+    return sqrt( pow( now_v, 2 ) - ( 2 * mu * G ) );
 }
 
 // 変化前の運動エネルギー = 現在の運動エネルギー + 外力が物体にした仕事
@@ -146,26 +146,10 @@ double Math::syntheticVector ( double a, double b ) {
 
 void Math::resolutionVector ( double vector_size, double cos_theta, double v[2], string axis) {
 
-    // printf("vector_size = %f, cos_theta = %f, v[0] = %f, v[1] = %f\n", vector_size, cos_theta, v[0], v[1]);
-
     v[0] = v[0] < 0 ? v[0] * -1.0 : v[0];
     v[1] = v[1] < 0 ? v[1] * -1.0 : v[1];
-    // printf("sin = %f, cos = %f", 1.0 - pow( cos_theta, 2.0 ), cos_theta);
-    // if( axis == "x" ) {
-    //     v[0] = vector_size * cos_theta;
-    //     v[1] = vector_size * sqrt ( 1.0 - pow( cos_theta, 2.0 ) );
-    // }
-    //
-    // else {
-    //     v[0] = vector_size * sqrt ( 1.0 - pow( cos_theta, 2.0 ) );
-    //     v[1] = vector_size * cos_theta;
-    // }
 
     v[0] = vector_size * cos_theta;
     v[1] = vector_size * sqrt ( 1.0 - pow( cos_theta, 2.0 ) );
-
-
-
-
 
 }

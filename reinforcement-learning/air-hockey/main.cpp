@@ -109,8 +109,9 @@ void updatePackPosV( double pack_pos[2] ) {
 
             double difference = MR + PR - distance_pack_to_mallet;
 
-            math.dividingPoint ( distance_pack_to_mallet, difference, mallet_pos[0], mallet_pos[1], pack_pos[0], pack_pos[1], pack_pos );
-
+            // if( pack_pos[0] < OX - ( PR + ( TLW / 2 ) ) && pack_pos[1] < OY - ( PR + ( TLW / 2 ) ) ) {
+            math.dividingPoint( distance_pack_to_mallet, difference, mallet_pos[0], mallet_pos[1], pack_pos[0], pack_pos[1], pack_pos );
+            // }
             // pack_pos_sign[0] = pack_pos[0] - mallet_pos[0] > 0 ? 1.0 : -1.0;
             // pack_pos_sign[1] = pack_pos[1] - mallet_pos[1] > 0 ? 1.0 : -1.0;
             // double kx = 1.0;
@@ -165,7 +166,51 @@ void updatePackPosV( double pack_pos[2] ) {
     pack_now_v[0] *= pack_now_v_sign[0];
     pack_now_v[1] *= pack_now_v_sign[1];
 
-    // printf("pack_now_v[0] = %lf, pack_now_v[1] = %lf\n", pack_now_v[0], pack_now_v[1]);
+    if( pack_pos[0] > OX - ( PR + ( TLW / 2 ) ) ) {
+        pack_pos[0] = OX - ( PR + ( TLW / 2 ) );
+    }
+
+    else if( pack_pos[0] < -(OX - ( PR + ( TLW / 2 ) )) ) {
+        pack_pos[0] = -( OX - ( PR + ( TLW / 2 ) ) );
+    }
+
+    if( pack_pos[1] > OY - ( PR + ( TLW / 2 ) ) ) {
+        pack_pos[1] = OY - ( PR + ( TLW / 2 ) );
+    }
+
+    else if( pack_pos[1] < -(OY - ( PR + ( TLW / 2 ) )) ) {
+        pack_pos[1] = -( OY - ( PR + ( TLW / 2 ) ) );
+    }
+
+    if( pack_pos[0] == OX - ( PR + ( TLW / 2 ) ) && pack_pos[1] == OY - ( PR + ( TLW / 2 ) ) && distance_pack_to_mallet <= PR + MR ) {
+        double difference = MR + PR - distance_pack_to_mallet;
+        math.dividingPoint ( distance_pack_to_mallet, difference, pack_pos[0], pack_pos[1], mallet_pos[0], mallet_pos[1], mallet_pos );
+        printf("HELLO\n");
+
+    }
+
+    else if( pack_pos[0] == OX - ( PR + ( TLW / 2 ) ) && pack_pos[1] == - (OY - ( PR + ( TLW / 2 ) ) ) && distance_pack_to_mallet <= PR + MR ) {
+        double difference = MR + PR - distance_pack_to_mallet;
+        math.dividingPoint ( distance_pack_to_mallet, difference, pack_pos[0], pack_pos[1], mallet_pos[0], mallet_pos[1], mallet_pos );
+        printf("HELLO\n");
+
+    }
+
+    else if( pack_pos[0] == - ( OX - ( PR + ( TLW / 2 ) ) ) && pack_pos[1] == OY - ( PR + ( TLW / 2 ) ) && distance_pack_to_mallet <= PR + MR ) {
+        double difference = MR + PR - distance_pack_to_mallet;
+        math.dividingPoint ( distance_pack_to_mallet, difference, pack_pos[0], pack_pos[1], mallet_pos[0], mallet_pos[1], mallet_pos );
+        printf("HELLO\n");
+
+    }
+
+    else if( pack_pos[0] == - ( OX - ( PR + ( TLW / 2 ) ) ) && pack_pos[1] == - ( OY - ( PR + ( TLW / 2 ) ) ) && distance_pack_to_mallet <= PR + MR ) {
+        double difference = MR + PR - distance_pack_to_mallet;
+        math.dividingPoint ( distance_pack_to_mallet, difference, pack_pos[0], pack_pos[1], mallet_pos[0], mallet_pos[1], mallet_pos );
+        printf("HELLO\n");
+
+    }
+
+    printf("pack_pos[0] = %lf, pack_pos[1] = %lf\n", pack_pos[0], pack_pos[1]);
 
 
 

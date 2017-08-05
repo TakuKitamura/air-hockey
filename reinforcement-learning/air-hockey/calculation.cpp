@@ -42,6 +42,18 @@ double Physics::afterSpeedOnFriction ( string target, double now_v, double mu ) 
     return sqrt( pow( now_v, 2 ) - ( 2 * mu * G ) );
 }
 
+// mass_ratio = ( M + m ) / m
+double Physics::afterSpeedOnFriction ( string target, double now_v, double mu, double mass_ratio ) {
+
+    // 平方根が存在しない時
+    if( 2 * mu * G  > mass_ratio * pow( now_v, 2 ) ) {
+        // printf("NO SQUARE ROOT!\n");
+        return 0.0;
+    }
+
+    return sqrt( ( mass_ratio * pow( now_v, 2 ) ) - ( 2 * mu * G ) );
+}
+
 // 変化前の運動エネルギー = 現在の運動エネルギー + 外力が物体にした仕事
 // double calculationDoneWork( string target, double now_physical_energy, double outside_energy ) {
 //     return now_physical_energy + outside_energy;
@@ -152,4 +164,9 @@ void Math::resolutionVector ( double vector_size, double cos_theta, double v[2],
     v[0] = vector_size * cos_theta;
     v[1] = vector_size * sqrt ( 1.0 - pow( cos_theta, 2.0 ) );
 
+}
+
+void Math::dividingPoint ( double m, double n, double xa, double ya, double xp, double yp, double v[2] ) {
+    v[0] = ( ( ( m + n ) * xp ) - ( n * xa ) ) / m;
+    v[1] = ( ( ( m + n ) * yp ) - ( n * ya ) ) / m;
 }

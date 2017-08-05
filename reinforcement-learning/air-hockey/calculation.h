@@ -27,6 +27,7 @@ public:
     // double calculationDoneWork( double before_physical_energy, double now_physical_energy, string target );
 
     double afterSpeedOnFriction ( string target, double now_v, double mu );
+    double afterSpeedOnFriction ( string target, double now_v, double mu, double mass_ratio );
 
     // v = v_0 + at
     double acceleratedMotionExceptY( string target, double initialV, double a, double t );
@@ -63,6 +64,8 @@ public:
     double syntheticVector ( double a, double b );
 
     void resolutionVector ( double vector_size, double cos_theta, double v[2], string axis);
+
+    void dividingPoint ( double m, double n, double xa, double ya, double xp, double yp, double v[2] );
 
 };
 

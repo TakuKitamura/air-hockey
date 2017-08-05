@@ -31,7 +31,7 @@ double Physics::dynamicFriction( double f, double mu, string target ) {
     return f / mu;
 }
 
-double Physics::afterSpeedOnFriction ( string target, double now_v, double mu ) {
+double Physics::afterSpeedOnFriction( string target, double now_v, double mu ) {
 
     // 平方根が存在しない時
     if( 2 * mu * G  > pow( now_v, 2 ) ) {
@@ -43,7 +43,7 @@ double Physics::afterSpeedOnFriction ( string target, double now_v, double mu ) 
 }
 
 // mass_ratio = ( M + m ) / m
-double Physics::afterSpeedOnFriction ( string target, double now_v, double mu, double mass_ratio ) {
+double Physics::afterSpeedOnFriction( string target, double now_v, double mu, double mass_ratio ) {
 
     // 平方根が存在しない時
     if( 2 * mu * G  > mass_ratio * pow( now_v, 2 ) ) {

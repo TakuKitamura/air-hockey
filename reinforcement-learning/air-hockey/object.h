@@ -14,8 +14,10 @@
 #define OX 194
 #define OY 366
 
-#define TW 388
-#define TL 732
+// #define TW 388
+// #define TL 732
+
+#define TG 1
 
 
 class ObjectGl {

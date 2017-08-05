@@ -8,6 +8,10 @@
 
 #define TIME 1
 
+void launchPack( double pack_pos[2], double a[2] );
+void updatePackPosV( double pack_pos[2] );
+void updateMalletPosV( double mallet_pos[2], double x, double y, double click_count );
+
 double pack_pos[2] = { 0.0, 0.0 };
 double mallet_pos[2] = { 0.0, 0.0 };
 double pack_now_v[2] = { 0.0, 0.0 };
@@ -19,7 +23,7 @@ ObjectGl table;
 ObjectGl pack;
 ObjectGl mallet;
 
-void launchPack( double pack_pos[2], double a[2] ){
+void launchPack( double pack_pos[2], double a[2] ) {
 
     srand( ( unsigned ) time( NULL ) );
     pack_pos[0] = rand() % (OX - 48) + ( PR + ( TLW / 2 ) );
@@ -131,8 +135,8 @@ void updatePackPosV( double pack_pos[2] ) {
             // pack_pos[0] = pack_pos[0] * pack_pos_sign[0] > 0 ? pack_pos[0] : pack_pos[0] * pack_pos_sign[0];
             // pack_pos[1] = pack_pos[1] * pack_pos_sign[1] > 0 ? pack_pos[1] : pack_pos[1] * pack_pos_sign[1];
 
-            pack_now_v[0] = phy.afterElasticCollisionV( pack_now_v[0], E ) + mallet_now_v[0];
-            pack_now_v[1] = phy.afterElasticCollisionV( pack_now_v[1], E ) + mallet_now_v[1];
+            pack_now_v[0] = phy.afterElasticCollisionV( pack_now_v[0], 0.3 ) + mallet_now_v[0];
+            pack_now_v[1] = phy.afterElasticCollisionV( pack_now_v[1], 0.3 ) + mallet_now_v[1];
         }
     }
 
@@ -144,8 +148,8 @@ void updatePackPosV( double pack_pos[2] ) {
     pack_now_v_sign[0] = pack_now_v[0] > 0 ? 1.0 : -1.0;
     pack_now_v_sign[1] = pack_now_v[1] > 0 ? 1.0 : -1.0;
 
-    //     // printf("pack_now_v = %lf, pack_now_v = %lf\n", pack_now_v[0], pack_now_v[1]);
-    //     // printf("mallet_now_v = %lf, mallet_now_v = %lf\n", mallet_now_v[0], mallet_now_v[1]);
+        // printf("pack_now_v = %lf, pack_now_v = %lf\n", pack_now_v[0], pack_now_v[1]);
+        printf("mallet_now_v = %lf, mallet_now_v = %lf\n", mallet_now_v[0], mallet_now_v[1]);
     //     before_synthetic_v = math.syntheticVector( pack_now_v[0] + mallet_now_v[0], pack_now_v[1] + mallet_now_v[1] );
     //     after_synthetic_v = phy.afterSpeedOnFriction( "v", before_synthetic_v, MU , ( MM + PM ) / PM );
     // }
@@ -185,32 +189,48 @@ void updatePackPosV( double pack_pos[2] ) {
     if( pack_pos[0] == OX - ( PR + ( TLW / 2 ) ) && pack_pos[1] == OY - ( PR + ( TLW / 2 ) ) && distance_pack_to_mallet <= PR + MR ) {
         double difference = MR + PR - distance_pack_to_mallet;
         math.dividingPoint ( distance_pack_to_mallet, difference, pack_pos[0], pack_pos[1], mallet_pos[0], mallet_pos[1], mallet_pos );
-        printf("HELLO\n");
+        // printf("HELLO\n");
 
     }
 
     else if( pack_pos[0] == OX - ( PR + ( TLW / 2 ) ) && pack_pos[1] == - (OY - ( PR + ( TLW / 2 ) ) ) && distance_pack_to_mallet <= PR + MR ) {
         double difference = MR + PR - distance_pack_to_mallet;
         math.dividingPoint ( distance_pack_to_mallet, difference, pack_pos[0], pack_pos[1], mallet_pos[0], mallet_pos[1], mallet_pos );
-        printf("HELLO\n");
+        // printf("HELLO\n");
 
     }
 
     else if( pack_pos[0] == - ( OX - ( PR + ( TLW / 2 ) ) ) && pack_pos[1] == OY - ( PR + ( TLW / 2 ) ) && distance_pack_to_mallet <= PR + MR ) {
         double difference = MR + PR - distance_pack_to_mallet;
         math.dividingPoint ( distance_pack_to_mallet, difference, pack_pos[0], pack_pos[1], mallet_pos[0], mallet_pos[1], mallet_pos );
-        printf("HELLO\n");
+        // printf("HELLO\n");
 
     }
 
     else if( pack_pos[0] == - ( OX - ( PR + ( TLW / 2 ) ) ) && pack_pos[1] == - ( OY - ( PR + ( TLW / 2 ) ) ) && distance_pack_to_mallet <= PR + MR ) {
         double difference = MR + PR - distance_pack_to_mallet;
         math.dividingPoint ( distance_pack_to_mallet, difference, pack_pos[0], pack_pos[1], mallet_pos[0], mallet_pos[1], mallet_pos );
-        printf("HELLO\n");
+        // printf("HELLO\n");
 
     }
 
-    printf("pack_pos[0] = %lf, pack_pos[1] = %lf\n", pack_pos[0], pack_pos[1]);
+    if( pack_pos[1] == OY - ( PR + ( TLW / 2 ) ) ) {
+        if( pack_pos[0] <= 100 && pack_pos[0] >= -100 ) {
+            launchPack( pack_pos, pack_now_v );
+            updateMalletPosV( mallet_pos , 0.0 , -( OY / 2.0 ), 1 );
+        }
+    }
+
+    else if( pack_pos[1] == - ( OY - ( PR + ( TLW / 2 ) ) ) ) {
+        if( pack_pos[0] <= 100 && pack_pos[0] >= -100 ) {
+            launchPack( pack_pos, pack_now_v );
+            updateMalletPosV( mallet_pos , 0.0 , -( OY / 2.0 ), 1 );
+        }
+    }
+
+    // if( pack_pos[0] ==
+
+    // printf("pack_pos[0] = %lf, pack_pos[1] = %lf\n", pack_pos[0], pack_pos[1]);
 
 
 
@@ -273,13 +293,30 @@ void display(void)
     glClear(GL_COLOR_BUFFER_BIT);
 
     table.rectangle(
-        1.94, 3.66,
+        OX / 100.0, OY / 100.0,
         0.0, 1.0, 0.0,
         TLW );
 
+
+    // ゴール線
     table.line(
-        -1.94, 0.0,
-        1.94, 0.0,
+        TG, OY / 100.0 - 0.01,
+        -TG, OY / 100.0 - 0.01,
+        1.0, 0.0, 1.0,
+        TLW
+    );
+
+    // ゴール線
+    table.line(
+        TG, -( OY / 100.0 - 0.01 ),
+        -TG, -( OY / 100.0 - 0.01 ),
+        1.0, 0.0, 1.0,
+        TLW
+    );
+
+    table.line(
+        -OX / 100.0, 0.0,
+        OX / 100.0, 0.0,
         0.0, 1.0, 0.0,
         TLW
     );
@@ -311,6 +348,7 @@ void resize(int w, int h)
 
     /* スクリーン上の表示領域をビューポートの大きさに比例させる */
     glOrtho(-w / 200.0, w / 200.0, -h / 200.0, h / 200.0, -1.0, 1.0);
+    // glOrtho(-0.5, (GLdouble)w - 0.5, (GLdouble)h - 0.5, -0.5, -1.0, 1.0);
 
 }
 
@@ -319,6 +357,7 @@ void mouse(int button, int state, int x, int y) {
     if(button == GLUT_LEFT_BUTTON) {
         if (state == GLUT_DOWN) {
             updateMalletPosV( mallet_pos ,x - OX, -( y - OY ), 1 );
+            // printf("x = %d, y = %d\n",x - OX , -( y - OY ));
             // launchPack( pack_pos, pack_now_v );
         }
     }
@@ -327,7 +366,6 @@ void mouse(int button, int state, int x, int y) {
 void motion(int x, int y) {
     // unsigned long process_time = 0;
     updateMalletPosV( mallet_pos ,x - OX, -( y - OY ), 0 );
-    // printf("x = %d, y = %d\n",x - OX, -( y - OY ));
 }
 
 void timer( int value ) {
@@ -344,7 +382,7 @@ int main(int argc, char *argv[])
 {
 
     glutInitWindowPosition(100, 100);
-    glutInitWindowSize( TW , TL );
+    glutInitWindowSize( OX * 2.0 , OY * 2.0 );
 
     glutCreateWindow(argv[0]);
     glutDisplayFunc(display);

@@ -6,7 +6,7 @@
 #include "object.h"
 
 
-#define TIME 1
+#define TIME 10
 
 void launchPack( double pack_pos[2], double a[2] );
 void updatePackPosV( double pack_pos[2] );
@@ -76,27 +76,12 @@ void updatePackPosV( double pack_pos[2] ) {
 
     // printf("pack_pos[0] = %f, pack_pos[1] = %f\n",pack_pos[0],pack_pos[1]);
 
-    // distance_pack_to_mallet = math.distanceBetweenTwoPoints( pack_pos[0], pack_pos[1], mallet_pos[0], mallet_pos[1] );
-    //
-    // pack_pos_sign[0] = pack_pos[0] > 0 ? 1.0 : -1.0;
-    // pack_pos_sign[1] = pack_pos[1] > 0 ? 1.0 : -1.0;
-    //
-    // double k = 1.0;
-    //
-    // if( distance_pack_to_mallet < PR + MR ) {
-    //     k = ( ( PR + MR ) / distance_pack_to_mallet );
-    //     printf(" k = %f\n",k);
-    //     pack_pos[0] = pack_pos[0] * pack_pos_sign[0] * k;
-    //     pack_pos[1] = pack_pos[1] * pack_pos_sign[1] * k;
-    // }
-
-
-
-
-
     distance_pack_to_mallet = math.distanceBetweenTwoPoints( pack_pos[0], pack_pos[1], mallet_pos[0], mallet_pos[1] );
+
     // printf("vx = %lf, vy = %lf\n", mallet_now_v[0], mallet_now_v[1]);
 
+
+    // 壁に、パケットが衝突するとき
     if ( distance_pack_to_mallet > PR + MR ) {
 
         if( pack_pos[0] == OX - ( PR + ( TLW / 2 ) ) || pack_pos[0] == -( OX - ( PR + ( TLW / 2 ) ) ) ) {
@@ -106,50 +91,64 @@ void updatePackPosV( double pack_pos[2] ) {
         if( pack_pos[1] == OY - ( PR + ( TLW / 2 ) ) || pack_pos[1] == -( OY - ( PR + ( TLW / 2 ) ) ) ) {
             pack_now_v[1] = phy.afterElasticCollisionV( pack_now_v[1], E );
         }
+
+        // formed_angle = math.formedAngle( OX, 0, pack_pos[0], pack_pos[1] );
     }
 
     else {
-        if( distance_pack_to_mallet <= PR + MR ) {
+
+        // マレットに、パケットが衝突するとき
+        if( distance_pack_to_mallet <= PR + MR && pack_now_v[0] == 0.0 && pack_now_v[1] == 0.0 ) {
 
             double difference = MR + PR - distance_pack_to_mallet;
 
-            // if( pack_pos[0] < OX - ( PR + ( TLW / 2 ) ) && pack_pos[1] < OY - ( PR + ( TLW / 2 ) ) ) {
             math.dividingPoint( distance_pack_to_mallet, difference, mallet_pos[0], mallet_pos[1], pack_pos[0], pack_pos[1], pack_pos );
-            // }
-            // pack_pos_sign[0] = pack_pos[0] - mallet_pos[0] > 0 ? 1.0 : -1.0;
-            // pack_pos_sign[1] = pack_pos[1] - mallet_pos[1] > 0 ? 1.0 : -1.0;
-            // double kx = 1.0;
-            // double ky = 1.0;
+
+            // pack_now_v[0] += mallet_now_v[0];
+            // pack_now_v[1] += 5;
+
+            // double formed_angle2 = math.formedAngle( OX, pack_pos[1], mallet_pos[0] - pack_pos[0], mallet_pos[1] - pack_pos[1] );
             //
-            // kx = pack_pos_sign[0] > 0 ? ( PR + MR ) / distance_pack_to_mallet :  - ( ( PR + MR ) / distance_pack_to_mallet );
-            // ky = pack_pos_sign[1] > 0 ? ( PR + MR ) / distance_pack_to_mallet :  - ( ( PR + MR ) / distance_pack_to_mallet );
-            // printf("kx = %f, ky = %f\n",kx,ky);
-            //
-            //
-            // pack_pos[0] *= kx;
-            // pack_pos[1] *= ky;
-
-
-
-
-            // pack_pos[0] = pack_pos[0] * pack_pos_sign[0] > 0 ? pack_pos[0] : pack_pos[0] * pack_pos_sign[0];
-            // pack_pos[1] = pack_pos[1] * pack_pos_sign[1] > 0 ? pack_pos[1] : pack_pos[1] * pack_pos_sign[1];
-
-            pack_now_v[0] = phy.afterElasticCollisionV( pack_now_v[0], 0.3 ) + mallet_now_v[0];
-            pack_now_v[1] = phy.afterElasticCollisionV( pack_now_v[1], 0.3 ) + mallet_now_v[1];
+            // // formed_angle = math.formedAngle( OX, 0, pack_pos[0] - mallet_pos[0], pack_pos[1] - mallet_pos[1]);
+            // //
+            // pack_now_v[0] = phy.afterElasticCollisionV( pack_now_v[0], E ) + mallet_now_v[0];
+            // pack_now_v[1] = phy.afterElasticCollisionV( pack_now_v[1], E ) + mallet_now_v[1];
+            // //
+            // pack_now_v[0] = phy.afterElasticCollisionV ( pack_now_v[0] * formed_angle2, E ) + mallet_now_v[0];
+            // pack_now_v[1] = ( pack_now_v[1] * sqrt( 1.0 -  pow( formed_angle2, 2.0 ) ) ) + mallet_now_v[1];
         }
+
+        // else if ( distance_pack_to_mallet <= PR + MR && pack_pos[0] != 0.0 && pack_pos[1] != 0.0) {
+        //
+        //
+        // }
     }
 
+    // printf("pack_now_v[0] = %lf, pack_now_v[1] = %lf\n", pack_now_v[0], pack_now_v[1] );
+    /******************************************************************/
     formed_angle = math.formedAngle( OX, 0, pack_pos[0], pack_pos[1] );
+    /******************************************************************/
 
+    if ( distance_pack_to_mallet > PR + MR ) {
+        before_synthetic_v = math.syntheticVector( pack_now_v[0], pack_now_v[1] );
+        pack_now_v_sign[0] = pack_now_v[0] > 0 ? 1.0 : -1.0;
+        pack_now_v_sign[1] = pack_now_v[1] > 0 ? 1.0 : -1.0;
+    }
 
-    before_synthetic_v = math.syntheticVector( pack_now_v[0], pack_now_v[1] );
+    else {
+        before_synthetic_v = math.syntheticVector( pack_now_v[0] + mallet_now_v[0], pack_now_v[1] + mallet_now_v[1] );
+        printf("mallet_now_v[0] = %f, mallet_now_v[1] = %f\n", mallet_now_v[0], mallet_now_v[1]);
+        pack_now_v_sign[0] = pack_now_v[0] + mallet_now_v[0] > 0 ? 1.0 : -1.0;
+        pack_now_v_sign[1] = pack_now_v[1] + mallet_now_v[1] > 0 ? 1.0 : -1.0;
+    }
 
-    pack_now_v_sign[0] = pack_now_v[0] > 0 ? 1.0 : -1.0;
-    pack_now_v_sign[1] = pack_now_v[1] > 0 ? 1.0 : -1.0;
+    // before_synthetic_v = math.syntheticVector( pack_now_v[0], pack_now_v[1] );
+
+    // pack_now_v_sign[0] = pack_now_v[0] > 0 ? 1.0 : -1.0;
+    // pack_now_v_sign[1] = pack_now_v[1] > 0 ? 1.0 : -1.0;
 
         // printf("pack_now_v = %lf, pack_now_v = %lf\n", pack_now_v[0], pack_now_v[1]);
-        printf("mallet_now_v = %lf, mallet_now_v = %lf\n", mallet_now_v[0], mallet_now_v[1]);
+        // printf("mallet_now_v = %lf, mallet_now_v = %lf\n", mallet_now_v[0], mallet_now_v[1]);
     //     before_synthetic_v = math.syntheticVector( pack_now_v[0] + mallet_now_v[0], pack_now_v[1] + mallet_now_v[1] );
     //     after_synthetic_v = phy.afterSpeedOnFriction( "v", before_synthetic_v, MU , ( MM + PM ) / PM );
     // }
@@ -161,7 +160,7 @@ void updatePackPosV( double pack_pos[2] ) {
     }
 
     else {
-        after_synthetic_v = phy.afterSpeedOnFriction( "v", before_synthetic_v, MU , ( MM + PM ) / PM );
+        after_synthetic_v = phy.afterSpeedOnFriction( "v", before_synthetic_v, MU, ( MM + PM ) / PM );
     }
 
     math.resolutionVector( after_synthetic_v, formed_angle, pack_now_v, "x" );
@@ -169,6 +168,7 @@ void updatePackPosV( double pack_pos[2] ) {
 
     pack_now_v[0] *= pack_now_v_sign[0];
     pack_now_v[1] *= pack_now_v_sign[1];
+
 
     if( pack_pos[0] > OX - ( PR + ( TLW / 2 ) ) ) {
         pack_pos[0] = OX - ( PR + ( TLW / 2 ) );
@@ -230,7 +230,7 @@ void updatePackPosV( double pack_pos[2] ) {
 
     // if( pack_pos[0] ==
 
-    // printf("pack_pos[0] = %lf, pack_pos[1] = %lf\n", pack_pos[0], pack_pos[1]);
+
 
 
 
@@ -358,7 +358,7 @@ void mouse(int button, int state, int x, int y) {
         if (state == GLUT_DOWN) {
             updateMalletPosV( mallet_pos ,x - OX, -( y - OY ), 1 );
             // printf("x = %d, y = %d\n",x - OX , -( y - OY ));
-            // launchPack( pack_pos, pack_now_v );
+            launchPack( pack_pos, pack_now_v );
         }
     }
 }
@@ -380,6 +380,15 @@ void timer( int value ) {
 
 int main(int argc, char *argv[])
 {
+
+    printf("x = %f\n",math.formedAngle( 1.732, 1.0, 0.0, 2.0 ));
+    // printf("x = %f\n",math.formedAngle( 1, 1.0, 1, 2.0 ));
+    // printf("x = %f\n",math.syntheticVector( 1, 1));
+
+    // double test[2];
+    // math.resolutionVector( 2, 1, test, "x" );
+    // printf("test[0] = %f, test[1] = %f\n",test[0],test[1]);
+
 
     glutInitWindowPosition(100, 100);
     glutInitWindowSize( OX * 2.0 , OY * 2.0 );

@@ -34,24 +34,24 @@ double Physics::dynamicFriction( double f, double mu, string target ) {
 double Physics::afterSpeedOnFriction( string target, double now_v, double mu ) {
 
     // 平方根が存在しない時
-    if( 2 * mu * G  > pow( now_v, 2 ) ) {
+    if( 2 * mu * G  > pow( now_v, 2.0 ) ) {
         // printf("NO SQUARE ROOT!\n");
         return 0.0;
     }
 
-    return sqrt( pow( now_v, 2 ) - ( 2 * mu * G ) );
+    return sqrt( pow( now_v, 2.0 ) - ( 2 * mu * G ) );
 }
 
 // mass_ratio = ( M + m ) / m
 double Physics::afterSpeedOnFriction( string target, double now_v, double mu, double mass_ratio ) {
 
     // 平方根が存在しない時
-    if( 2 * mu * G  > mass_ratio * pow( now_v, 2 ) ) {
+    if( 2 * mu * G  > mass_ratio * pow( now_v, 2.0 ) ) {
         // printf("NO SQUARE ROOT!\n");
         return 0.0;
     }
 
-    return sqrt( ( mass_ratio * pow( now_v, 2 ) ) - ( 2 * mu * G ) );
+    return sqrt( ( mass_ratio * pow( now_v, 2.0 ) ) - ( 2 * mu * G ) );
 }
 
 // 変化前の運動エネルギー = 現在の運動エネルギー + 外力が物体にした仕事
@@ -138,22 +138,22 @@ double Math::innerProduct( double xa, double ya, double xb, double yb ) {
     return ( xa * xb ) + ( ya * yb );
 }
 
-// 0° <= θ <= 90°
-double Math::formedAngle( double xa, double ya, double xb, double yb ) {
-
-    double formed_angle = cos(
-        Math::innerProduct( xa, ya, xb, yb ) /
-            ( Math::distanceBetweenTwoPoints( xa , xb , 0 , 0 ) *
-            Math::distanceBetweenTwoPoints( 0 , 0 , xb , xb )
-            )
-    );
-
-    return formed_angle < 0 ? -formed_angle : formed_angle;
-}
 
 double Math::syntheticVector ( double a, double b ) {
     return sqrt( pow( a, 2.0 ) + pow( b, 2.0 ) );
 
+}
+
+// 0° <= θ <= 90°
+double Math::formedAngle( double xa, double ya, double xb, double yb ) {
+
+    double formed_angle =
+        Math::innerProduct( xa, ya, xb, yb ) /
+            ( Math::syntheticVector( xa, ya ) *
+            Math::syntheticVector( xb , yb )
+        );
+
+    return formed_angle < 0 ? -formed_angle : formed_angle;
 }
 
 void Math::resolutionVector ( double vector_size, double cos_theta, double v[2], string axis) {
@@ -162,11 +162,16 @@ void Math::resolutionVector ( double vector_size, double cos_theta, double v[2],
     v[1] = v[1] < 0 ? v[1] * -1.0 : v[1];
 
     v[0] = vector_size * cos_theta;
-    v[1] = vector_size * sqrt ( 1.0 - pow( cos_theta, 2.0 ) );
+    v[1] = vector_size * sqrt( 1.0 - pow( cos_theta, 2.0 ) );
 
 }
 
 void Math::dividingPoint ( double m, double n, double xa, double ya, double xp, double yp, double v[2] ) {
     v[0] = ( ( ( m + n ) * xp ) - ( n * xa ) ) / m;
     v[1] = ( ( ( m + n ) * yp ) - ( n * ya ) ) / m;
+}
+
+void Math::rotationalMovement ( double x, double y, double theta, double xo, double yo, double v[2] ) {
+    v[0] = xo + ( x * cos( theta ) ) - ( y * sin( theta ) );
+    v[1] = yo + ( x * sin( theta ) ) + ( y * cos( theta ) );
 }

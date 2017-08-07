@@ -39,7 +39,7 @@ double Physics::afterSpeedOnFriction( string target, double now_v, double mu ) {
         return 0.0;
     }
 
-    return sqrt( pow( now_v, 2.0 ) - ( 2 * mu * G ) );
+    return sqrt( pow( now_v, 2.0 ) - ( 2.0 * mu * G ) );
 }
 
 // mass_ratio = ( M + m ) / m
@@ -51,7 +51,7 @@ double Physics::afterSpeedOnFriction( string target, double now_v, double mu, do
         return 0.0;
     }
 
-    return sqrt( ( mass_ratio * pow( now_v, 2.0 ) ) - ( 2 * mu * G ) );
+    return sqrt( ( mass_ratio * pow( now_v, 2.0 ) ) - ( 2.0 * mu * G ) );
 }
 
 // 変化前の運動エネルギー = 現在の運動エネルギー + 外力が物体にした仕事
@@ -150,17 +150,14 @@ double Math::formedAngle( double xa, double ya, double xb, double yb ) {
     double formed_angle =
         Math::innerProduct( xa, ya, xb, yb ) /
             ( Math::syntheticVector( xa, ya ) *
-            Math::syntheticVector( xb , yb )
-        );
+                Math::syntheticVector( xb , yb )
+            );
 
     return formed_angle < 0 ? -formed_angle : formed_angle;
 }
 
 void Math::resolutionVector ( double vector_size, double cos_theta, double v[2], string axis) {
-
-    v[0] = v[0] < 0 ? v[0] * -1.0 : v[0];
-    v[1] = v[1] < 0 ? v[1] * -1.0 : v[1];
-
+    
     v[0] = vector_size * cos_theta;
     v[1] = vector_size * sqrt( 1.0 - pow( cos_theta, 2.0 ) );
 

@@ -41,23 +41,20 @@ void launchPack() {
 
 void updatePackPosV() {
 
-    double outside_energy = 0.0;
-
-    double formed_angle = 0.0;
-
-    double before_synthetic_v = 0.0;
-    double after_synthetic_v = 0.0;
+    double after_synthetic_vx = 0.0;
+    double after_synthetic_vy = 0.0;
 
     double pack_now_v_sign[2] = { 0.0, 0.0 };
 
-    double pack_pos_sign[2] = { 0.0, 0.0 };
-
     double distance_pack_to_mallet = 0.0;
 
+    double difference = 0.0;
+
+    // パックの位置を更新
     pack_pos[0] += pack_now_v[0];
     pack_pos[1] += pack_now_v[1];
 
-
+    // パックの存在範囲を制限
     if( pack_pos[0] > OX - ( PR + ( TLW / 2 ) ) ) {
         pack_pos[0] = OX - ( PR + ( TLW / 2 ) );
     }
@@ -74,13 +71,13 @@ void updatePackPosV() {
         pack_pos[1] = -( OY - ( PR + ( TLW / 2 ) ) );
     }
 
-
+    // パックからマレットまでの距離
     distance_pack_to_mallet = math.distanceBetweenTwoPoints( pack_pos[0], pack_pos[1], mallet_pos[0], mallet_pos[1] );
-    printf("distance_pack_to_mallet = %f\n",distance_pack_to_mallet);
-    // printf("vx = %lf, vy = %lf\n", mallet_now_v[0], mallet_now_v[1]);
 
+    // パックが、マレットに接触していないとき
     if ( distance_pack_to_mallet > PR + MR ) {
 
+        // テーブルの壁にパックが接触したときの処理
         if( pack_pos[0] == OX - ( PR + ( TLW / 2 ) ) || pack_pos[0] == -( OX - ( PR + ( TLW / 2 ) ) ) ) {
             pack_now_v[0] = phy.afterElasticCollisionV( pack_now_v[0], E );
         }
@@ -90,95 +87,60 @@ void updatePackPosV() {
         }
     }
 
+    // パックが、マレットに接触したとき
     else {
-        // if( distance_pack_to_mallet <= PR + MR ) {
 
-            double difference = MR + PR - distance_pack_to_mallet;
+        // マレットの半径＋パックの半径ーパックからマレットまでの距離
+        difference = MR + PR - distance_pack_to_mallet;
 
-            // if( pack_pos[0] < OX - ( PR + ( TLW / 2 ) ) && pack_pos[1] < OY - ( PR + ( TLW / 2 ) ) ) {
-            math.dividingPoint( distance_pack_to_mallet, difference, mallet_pos[0], mallet_pos[1], pack_pos[0], pack_pos[1], pack_pos );
-            // }
-            // pack_pos_sign[0] = pack_pos[0] - mallet_pos[0] > 0 ? 1.0 : -1.0;
-            // pack_pos_sign[1] = pack_pos[1] - mallet_pos[1] > 0 ? 1.0 : -1.0;
-            // double kx = 1.0;
-            // double ky = 1.0;
-            //
-            // kx = pack_pos_sign[0] > 0 ? ( PR + MR ) / distance_pack_to_mallet :  - ( ( PR + MR ) / distance_pack_to_mallet );
-            // ky = pack_pos_sign[1] > 0 ? ( PR + MR ) / distance_pack_to_mallet :  - ( ( PR + MR ) / distance_pack_to_mallet );
-            // printf("kx = %f, ky = %f\n",kx,ky);
-            //
-            //
-            // pack_pos[0] *= kx;
-            // pack_pos[1] *= ky;
+        // パックが、マレットに入り込まないようにする処理
+        // 内分点計算
+        math.dividingPoint( distance_pack_to_mallet, difference, mallet_pos[0], mallet_pos[1], pack_pos[0], pack_pos[1], pack_pos );
 
+        // 動いているマレットが、パックを押し出すとき
+        if( mallet_now_v[0] != 0.0 && mallet_now_v[1] != 0.0 ) {
+            pack_now_v[0] = mallet_now_v[0];
+            pack_now_v[1] = mallet_now_v[1];
+        }
 
-
-
-            // pack_pos[0] = pack_pos[0] * pack_pos_sign[0] > 0 ? pack_pos[0] : pack_pos[0] * pack_pos_sign[0];
-            // pack_pos[1] = pack_pos[1] * pack_pos_sign[1] > 0 ? pack_pos[1] : pack_pos[1] * pack_pos_sign[1];
-
-            pack_now_v[0] = phy.afterElasticCollisionV( pack_now_v[0], 0.3 ) + mallet_now_v[0];
-            pack_now_v[1] = phy.afterElasticCollisionV( pack_now_v[1], 0.3 ) + mallet_now_v[1];
-        // }
+        // 止まっているマレットに、パックが衝突するとき
+        // 要修正！！
+        else {
+            pack_now_v[0] = phy.afterElasticCollisionV( pack_now_v[0], E );
+            pack_now_v[1] = phy.afterElasticCollisionV( pack_now_v[1], E );
+        }
     }
 
-    // 以下摩擦
-    /**********/
-
+    // パックの速さの方向を保存
     pack_now_v_sign[0] = pack_now_v[0] > 0 ? 1.0 : -1.0;
     pack_now_v_sign[1] = pack_now_v[1] > 0 ? 1.0 : -1.0;
-    //
-    // pack_now_v[0] = pack_now_v[0] > 0 ? pack_now_v[0] : -pack_now_v[0];
-    // pack_now_v[1] = pack_now_v[1] > 0 ? pack_now_v[1] : -pack_now_v[1];
 
-
-    printf("pack_pos[0] = %f, pack_pos[1] = %f\n",pack_pos[0],pack_pos[1]);
-    // formed_angle = math.formedAngle( OX, 0, pack_pos[0], pack_pos[1] );
-    printf("formed_angle = %f\n",formed_angle);
-
-    // before_synthetic_v = math.syntheticVector( pack_now_v[0], pack_now_v[1] );
-    printf("before_synthetic_v = %f\n", before_synthetic_v);
-
-        // printf("pack_now_v = %lf, pack_now_v = %lf\n", pack_now_v[0], pack_now_v[1]);
-        // printf("mallet_now_v = %lf, mallet_now_v = %lf\n", mallet_now_v[0], mallet_now_v[1]);
-    //     before_synthetic_v = math.syntheticVector( pack_now_v[0] + mallet_now_v[0], pack_now_v[1] + mallet_now_v[1] );
-    //     after_synthetic_v = phy.afterSpeedOnFriction( "v", before_synthetic_v, MU , ( MM + PM ) / PM );
-    // }
-
-    // else {
-    double after_synthetic_vx;
-    double after_synthetic_vy;
-
+    // パックが、マレットに接触していないとき
     if ( distance_pack_to_mallet > PR + MR ) {
-        // after_synthetic_v = phy.afterSpeedOnFriction( "v", before_synthetic_v, MU );
+
+        // 摩擦が有る状況下でのパックの速さ計算
         after_synthetic_vx = phy.afterSpeedOnFriction( "v", pack_now_v[0], MU );
         after_synthetic_vy = phy.afterSpeedOnFriction( "v", pack_now_v[1], MU );
-
     }
 
+    // パックが、マレットに接触したとき
     else {
+        // 摩擦が有る状況下でのパックの速さ計算
         after_synthetic_vx = phy.afterSpeedOnFriction( "v", pack_now_v[0], MU , ( MM + PM ) / PM );
         after_synthetic_vy = phy.afterSpeedOnFriction( "v", pack_now_v[1], MU , ( MM + PM ) / PM );
     }
 
-    printf("after_synthetic_v = %f\n",after_synthetic_v);
-
-    // formed_angle = math.formedAngle( OX, 0, pack_pos[0], pack_pos[1] );
-
-    // math.resolutionVector( after_synthetic_v, formed_angle, pack_now_v, "x" );
-
-
+    // パックの速さの方向を合わせる
     pack_now_v[0] = after_synthetic_vx * pack_now_v_sign[0];
     pack_now_v[1] = after_synthetic_vy * pack_now_v_sign[1];
 
-    if ( pack_now_v[0] == 0.0 || pack_now_v[0] == 0.0 ) {
+    // パックの速さが微小のとき、動きを自然にするための処理
+    if ( math.syntheticVector( pack_now_v[0], pack_now_v[1] ) <= 1.0 ) {
         pack_now_v[0] = 0.0;
         pack_now_v[1] = 0.0;
     }
 
-    /*********/
-
-
+    // パックの存在範囲を制限
     if( pack_pos[0] > OX - ( PR + ( TLW / 2 ) ) ) {
         pack_pos[0] = OX - ( PR + ( TLW / 2 ) );
     }
@@ -195,35 +157,28 @@ void updatePackPosV() {
         pack_pos[1] = -( OY - ( PR + ( TLW / 2 ) ) );
     }
 
+    // パックが四隅にあるときの処理
     if( pack_pos[0] == OX - ( PR + ( TLW / 2 ) ) && pack_pos[1] == OY - ( PR + ( TLW / 2 ) ) && distance_pack_to_mallet <= PR + MR ) {
-        double difference = MR + PR - distance_pack_to_mallet;
+        difference = MR + PR - distance_pack_to_mallet;
         math.dividingPoint ( distance_pack_to_mallet, difference, pack_pos[0], pack_pos[1], mallet_pos[0], mallet_pos[1], mallet_pos );
-        // printf("HELLO\n");
-
     }
 
     else if( pack_pos[0] == OX - ( PR + ( TLW / 2 ) ) && pack_pos[1] == - (OY - ( PR + ( TLW / 2 ) ) ) && distance_pack_to_mallet <= PR + MR ) {
-        double difference = MR + PR - distance_pack_to_mallet;
+        difference = MR + PR - distance_pack_to_mallet;
         math.dividingPoint ( distance_pack_to_mallet, difference, pack_pos[0], pack_pos[1], mallet_pos[0], mallet_pos[1], mallet_pos );
-        // printf("HELLO\n");
-
     }
 
     else if( pack_pos[0] == - ( OX - ( PR + ( TLW / 2 ) ) ) && pack_pos[1] == OY - ( PR + ( TLW / 2 ) ) && distance_pack_to_mallet <= PR + MR ) {
-        double difference = MR + PR - distance_pack_to_mallet;
+        difference = MR + PR - distance_pack_to_mallet;
         math.dividingPoint ( distance_pack_to_mallet, difference, pack_pos[0], pack_pos[1], mallet_pos[0], mallet_pos[1], mallet_pos );
-        // printf("HELLO\n");
-
     }
 
     else if( pack_pos[0] == - ( OX - ( PR + ( TLW / 2 ) ) ) && pack_pos[1] == - ( OY - ( PR + ( TLW / 2 ) ) ) && distance_pack_to_mallet <= PR + MR ) {
-        double difference = MR + PR - distance_pack_to_mallet;
+        difference = MR + PR - distance_pack_to_mallet;
         math.dividingPoint ( distance_pack_to_mallet, difference, pack_pos[0], pack_pos[1], mallet_pos[0], mallet_pos[1], mallet_pos );
-        // printf("HELLO\n");
-
     }
 
-
+    // パックがゴールに入ったときの処理
     if( pack_pos[1] == OY - ( PR + ( TLW / 2 ) ) ) {
         if( pack_pos[0] <= 100 && pack_pos[0] >= -100 ) {
             launchPack();
@@ -231,28 +186,12 @@ void updatePackPosV() {
         }
     }
 
-    else if( pack_pos[1] == - ( OY - ( PR + ( TLW / 2 ) ) ) ) {
+    else if( pack_pos[1] == -( OY - ( PR + ( TLW / 2 ) ) ) ) {
         if( pack_pos[0] <= 100 && pack_pos[0] >= -100 ) {
             launchPack();
             updateMalletPosV( 0.0 , -( OY / 2.0 ), 1 );
         }
     }
-
-    // if( pack_pos[0] ==
-
-    // printf("pack_pos[0] = %lf, pack_pos[1] = %lf\n", pack_pos[0], pack_pos[1]);
-
-
-
-    // if( distance_pack_to_mallet <= PR + MR + 2 && distance_pack_to_mallet >= PR + MR - 2 ) {
-    //     pack_now_v[0] += mallet_now_v[0];
-    //     pack_now_v[1] += mallet_now_v[1];
-    //
-        // printf("direction[0] = %f, direction[1] = %f\n\n",pack_pos[0] - mallet_pos[0], pack_pos[1] - mallet_pos[1] );
-    // }
-        printf("pack_now_v[0] = %f, pack_now_v[1] = %f\n\n",pack_now_v[0],pack_now_v[1]);
-    // glutPostRedisplay();
-
 }
 
 void updateMalletPosV( double x, double y, double click_count ) {
@@ -260,12 +199,15 @@ void updateMalletPosV( double x, double y, double click_count ) {
     double before_mallet_pos[2] = { 0.0, 0.0 };
     double after_mallet_pos[2] = { 0.0, 0.0 };
 
+    // 現在のマレットの位置を保存
     before_mallet_pos[0] = mallet_pos[0];
     before_mallet_pos[1] = mallet_pos[1];
 
+    // マレットの位置を、マウスが押された座標にする
     mallet_pos[0] = x;
     mallet_pos[1] = y;
 
+    // マレットの存在範囲を制限
     if( mallet_pos[0] > OX - ( MR + ( TLW / 2 ) ) ) {
         mallet_pos[0] = OX - ( MR + ( TLW / 2 ) );
     }
@@ -278,19 +220,24 @@ void updateMalletPosV( double x, double y, double click_count ) {
         mallet_pos[1] = -( OY - ( MR + ( TLW / 2 ) ) );
     }
 
-    // else if( mallet_pos[1] > -( MR + ( TLW / 2 ) ) ) {
-    //     mallet_pos[1] = -( MR + ( TLW / 2 ) ) ;
-    // }
+    else if( mallet_pos[1] > -( MR + ( TLW / 2 ) ) ) {
+        mallet_pos[1] = -( MR + ( TLW / 2 ) ) ;
+    }
 
+    // マレットの位置を更新した後の、座標を保存
     after_mallet_pos[0] = mallet_pos[0];
     after_mallet_pos[1] = mallet_pos[1];
 
+    // クリック回数により、処理を分岐
     if(click_count == 0) {
+
+        // マレットの、速さ増加分を保存
         mallet_now_v[0] = after_mallet_pos[0] - before_mallet_pos[0];
         mallet_now_v[1] = after_mallet_pos[1] - before_mallet_pos[1];
     }
 
     else {
+        // マレットの速さ初期化
         mallet_now_v[0] = 0.0;
         mallet_now_v[1] = 0.0;
     }
@@ -300,15 +247,17 @@ void updateMalletPosV( double x, double y, double click_count ) {
 void display()
 {
 
+    // 画面をクリアする
     glClear(GL_COLOR_BUFFER_BIT);
 
+    // テーブルの外枠を描く
     table.rectangle(
         OX / 100.0, OY / 100.0,
         0.0, 1.0, 0.0,
         TLW );
 
 
-    // ゴール線
+    // ゴール線を描く
     table.line(
         TG, OY / 100.0 - 0.01,
         -TG, OY / 100.0 - 0.01,
@@ -316,7 +265,7 @@ void display()
         TLW
     );
 
-    // ゴール線
+    // ゴール線を描く
     table.line(
         TG, -( OY / 100.0 - 0.01 ),
         -TG, -( OY / 100.0 - 0.01 ),
@@ -324,6 +273,7 @@ void display()
         TLW
     );
 
+    // テーブルの中央線を描く
     table.line(
         -OX / 100.0, 0.0,
         OX / 100.0, 0.0,
@@ -331,6 +281,7 @@ void display()
         TLW
     );
 
+    // パックを描く
     pack.fillCircle(
         pack_pos[0] * 0.01, pack_pos[1] * 0.01,
         PR * 0.01,
@@ -338,6 +289,7 @@ void display()
         1.0, 0.0, 0.0
     );
 
+    // マレットを描く
     mallet.fillCircle(
         mallet_pos[0] * 0.01, mallet_pos[1] * 0.01,
         MR * 0.01,
@@ -350,52 +302,55 @@ void display()
 
 void resize(int w, int h)
 {
-    /* ウィンドウ全体をビューポートにする */
+    // ウィンドウ全体をビューポートにする
     glViewport(0, 0, w, h);
 
-    /* 変換行列の初期化 */
+    // 変換行列の初期化
     glLoadIdentity();
 
-    /* スクリーン上の表示領域をビューポートの大きさに比例させる */
+    // スクリーン上の表示領域をビューポートの大きさに比例させる
     glOrtho(-w / 200.0, w / 200.0, -h / 200.0, h / 200.0, -1.0, 1.0);
-    // glOrtho(-0.5, (GLdouble)w - 0.5, (GLdouble)h - 0.5, -0.5, -1.0, 1.0);
 
 }
 
 void mouse(int button, int state, int x, int y) {
 
+    // マウスの左ボタンが押されたとき
     if(button == GLUT_LEFT_BUTTON) {
         if (state == GLUT_DOWN) {
+            // マレットの位置を、クリックした座標に更新
             updateMalletPosV( x - OX, -( y - OY ), 1 );
-            // printf("x = %d, y = %d\n",x - OX , -( y - OY ));
+
+            // パックを再発射
             launchPack();
         }
     }
 }
 
 void motion(int x, int y) {
-    // unsigned long process_time = 0;
+
+    // マウスが動いたときにその座標へ、マレットの位置を更新
     updateMalletPosV( x - OX, -( y - OY ), 0 );
 }
 
 void timer( int value ) {
+
+    // 1ミリ秒ごとに、処理を繰り返す
+
+    // パックの位置を更新
     updatePackPosV();
+
+    // 画面を更新
     glutPostRedisplay();
+
+    // 再びtimer関数を再帰的に呼び出す
     glutTimerFunc( TIME, timer, 0 );
 
-
-    // printf("x = %f, y = %f\n",before_mallet_pos[0], before_mallet_pos[1]);
-    // printf("x = %f, y = %f\n\n",after_mallet_pos[0], after_mallet_pos[1]);
 }
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
 
-    // printf("x = %f,\n",phy.afterSpeedOnFriction( "v", 2, MU ));
-    // double test[2];
-    // math.resolutionVector( 10, 0.5, test, "x" );
-    // printf("test[0] = %f, test[1] = %f\n",test[0],test[1]);
-//
+    // ウィンドウ表示に関し、必要な処理
     glutInitWindowPosition(100, 100);
     glutInitWindowSize( OX * 2.0 , OY * 2.0 );
 
@@ -405,10 +360,13 @@ int main(int argc, char *argv[])
     glutMouseFunc(mouse);
     glutMotionFunc(motion);
 
+    // パックを発射
     launchPack();
 
+    // マレットの位置を初期化
     updateMalletPosV( 0.0 , -( OY / 2.0 ), 1 );
 
+    // timer関数を再帰的に呼び出す
     glutTimerFunc( TIME, timer, 0 );
     glutMainLoop();
 

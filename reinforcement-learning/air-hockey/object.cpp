@@ -4,6 +4,7 @@
 
 using namespace std;
 
+// 長方形を描く
 void ObjectGl::rectangle( double x, double y, double red, double green, double blue, double width ) {
 
     glColor3d( red, green, blue );
@@ -18,6 +19,7 @@ void ObjectGl::rectangle( double x, double y, double red, double green, double b
     glEnd();
 }
 
+// 線分を描く
 void ObjectGl::line( double xa, double ya, double xb, double yb, double red, double green, double blue, double width ) {
 
     glColor3d( red, green, blue );
@@ -30,6 +32,7 @@ void ObjectGl::line( double xa, double ya, double xb, double yb, double red, dou
     glEnd();
 }
 
+// 円を描く
 void ObjectGl::fillCircle( double a, double b, double r, double n, double red, double green, double blue ) {
 
     double i = 0.0;

@@ -9,7 +9,7 @@
 #define PR 20   // パック半径
 #define TLW 4
 #define E  0.5 // 反発係数
-#define MU 0.2 // 動摩擦係数
+#define MU 0.0001 // 動摩擦係数
 
 #define OX 194
 #define OY 366

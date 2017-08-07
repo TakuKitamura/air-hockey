@@ -67,6 +67,8 @@ public:
 
     void dividingPoint ( double m, double n, double xa, double ya, double xp, double yp, double v[2] );
 
+    void rotationalMovement ( double x, double y, double theta, double xo, double yo, double v[2] );
+
 };
 
 #endif

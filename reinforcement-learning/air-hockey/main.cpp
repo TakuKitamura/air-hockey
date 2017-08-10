@@ -5,12 +5,13 @@
 #include "calculation.h"
 #include "object.h"
 
+// タイマー間隔
+#define INTERVAL 1
 
-#define TIME 1
-
-void launchPack();
-void updatePackPosV();
-void updateMalletPosV( double x, double y, double click_count );
+// void launchPack();
+void putPack();
+void updatePack();
+void updateMallet( double x, double y, double click_count );
 
 double pack_pos[2] = { 0.0, 0.0 };
 double mallet_pos[2] = { 0.0, 0.0 };
@@ -23,23 +24,29 @@ ObjectGl table;
 ObjectGl pack;
 ObjectGl mallet;
 
-void launchPack() {
+// void launchPack() {
+//
+//     srand( ( unsigned ) time( NULL ) );
+//     pack_pos[0] = rand() % (OX - 48) + ( PR + ( TLW / 2 ) );
+//     pack_pos[1] = rand() % (OY - 48) + ( PR + ( TLW / 2 ) );
+//     pack_pos[0] = rand() % 2 ? pack_pos[0] : -pack_pos[0];
+//
+//     pack_now_v[0] = rand() % 5 + 10;
+//     pack_now_v[1] = rand() % 5 + 10;
+//     //
+//     pack_now_v[0] = rand() % 2 ? pack_now_v[0] : -pack_now_v[0];
+//     pack_now_v[1] *= -1;
+//
+// }
 
-    srand( ( unsigned ) time( NULL ) );
-    pack_pos[0] = rand() % (OX - 48) + ( PR + ( TLW / 2 ) );
-    pack_pos[1] = rand() % (OY - 48) + ( PR + ( TLW / 2 ) );
-
-    pack_pos[0] = rand() % 2 ? pack_pos[0] : -pack_pos[0];
-
-    pack_now_v[0] = rand() % 5 + 10;
-    pack_now_v[1] = rand() % 5 + 10;
-    //
-    pack_now_v[0] = rand() % 2 ? pack_now_v[0] : -pack_now_v[0];
-    pack_now_v[1] *= -1;
-
+void putPack() {
+    pack_pos[0] = 0.0;
+    pack_pos[1] = -80.0;
+    pack_now_v[0] = 0.0;
+    pack_now_v[1] = 0.0;
 }
 
-void updatePackPosV() {
+void updatePack() {
 
     double after_synthetic_vx = 0.0;
     double after_synthetic_vy = 0.0;
@@ -181,20 +188,18 @@ void updatePackPosV() {
     // パックがゴールに入ったときの処理
     if( pack_pos[1] == OY - ( PR + ( TLW / 2 ) ) ) {
         if( pack_pos[0] <= 100 && pack_pos[0] >= -100 ) {
-            launchPack();
-            updateMalletPosV( 0.0 , -( OY / 2.0 ), 1 );
+            putPack();
         }
     }
 
     else if( pack_pos[1] == -( OY - ( PR + ( TLW / 2 ) ) ) ) {
         if( pack_pos[0] <= 100 && pack_pos[0] >= -100 ) {
-            launchPack();
-            updateMalletPosV( 0.0 , -( OY / 2.0 ), 1 );
+            putPack();
         }
     }
 }
 
-void updateMalletPosV( double x, double y, double click_count ) {
+void updateMallet( double x, double y, double click_count ) {
 
     double before_mallet_pos[2] = { 0.0, 0.0 };
     double after_mallet_pos[2] = { 0.0, 0.0 };
@@ -319,10 +324,18 @@ void mouse(int button, int state, int x, int y) {
     if(button == GLUT_LEFT_BUTTON) {
         if (state == GLUT_DOWN) {
             // マレットの位置を、クリックした座標に更新
-            updateMalletPosV( x - OX, -( y - OY ), 1 );
+            updateMallet( x - OX, -( y - OY ), 1 );
+        }
+    }
 
-            // パックを再発射
-            launchPack();
+    // マウスの右ボタンが押されたとき
+    if(button == GLUT_RIGHT_BUTTON) {
+        if (state == GLUT_DOWN) {
+            // マレットの位置を、クリックした座標に更新
+            updateMallet( x - OX, -( y - OY ), 1 );
+
+            // パックを再配置
+            putPack();
         }
     }
 }
@@ -330,7 +343,7 @@ void mouse(int button, int state, int x, int y) {
 void motion(int x, int y) {
 
     // マウスが動いたときにその座標へ、マレットの位置を更新
-    updateMalletPosV( x - OX, -( y - OY ), 0 );
+    updateMallet( x - OX, -( y - OY ), 0 );
 }
 
 void timer( int value ) {
@@ -338,13 +351,13 @@ void timer( int value ) {
     // 1ミリ秒ごとに、処理を繰り返す
 
     // パックの位置を更新
-    updatePackPosV();
+    updatePack();
 
     // 画面を更新
     glutPostRedisplay();
 
     // 再びtimer関数を再帰的に呼び出す
-    glutTimerFunc( TIME, timer, 0 );
+    glutTimerFunc( INTERVAL, timer, 0 );
 
 }
 
@@ -360,14 +373,14 @@ int main(int argc, char *argv[]) {
     glutMouseFunc(mouse);
     glutMotionFunc(motion);
 
-    // パックを発射
-    launchPack();
+    // パックを配置
+    putPack();
 
     // マレットの位置を初期化
-    updateMalletPosV( 0.0 , -( OY / 2.0 ), 1 );
+    updateMallet( 0.0 , -( OY / 2.0 ), 1 );
 
     // timer関数を再帰的に呼び出す
-    glutTimerFunc( TIME, timer, 0 );
+    glutTimerFunc( INTERVAL, timer, 0 );
     glutMainLoop();
 
 

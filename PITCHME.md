@@ -253,9 +253,8 @@ AIとは
 ### モンテカルロ法
 
 **シュミレーションや数値計算を**
-**乱数を用いいて行う手法のこと**
 
-モンテカルロは、ギャンブルが有名なモナコの地区！
+**乱数を用いて行う手法のこと**
 
 +++
 
@@ -263,7 +262,8 @@ AIとは
 
 ![モンテカルロで円周率](image/pi.png)
 $$(円の面積) = \pi r^2 = \pi(1.0)^2 = \pi $$
-$$(円の中の点の個数):(全部の点の個数) = (円の面積):(正方形の面積) = \pi:4$$
+$$(円の中の点の個数):(全部の点の個数) = $$
+$$(円の面積):(正方形の面積) = \pi:4$$
 $$\pi = 4*(円の中野店の個数)/(全部の点の個数)$$
 
 +++
@@ -280,8 +280,10 @@ $$\pi = 4*(円の中野店の個数)/(全部の点の個数)$$
 
 [1]人工知能・機械学習・ディープラーニングの関係
 http://www.itmedia.co.jp/enterprise/articles/1608/31/news086.html
+
 [2]UCL Course on RL Lecture 1: ntroduction to Reinforcement Learning
 http://www0.cs.ucl.ac.uk/staff/d.silver/web/Teaching_files/intro_RL.pdf
+
 [3]絶景はここにもあった！モナコ公国・モンテカルロで見るべき観光スポット6選
 https://wondertrip.jp/europe/48122.html
 
@@ -289,18 +291,22 @@ https://wondertrip.jp/europe/48122.html
 
 [4]朝日新聞・モンテカルロ法・コンピューター囲碁
 http://f.hatena.ne.jp/gryphon/20090418081233
+
 [5]モンテカルロ法
 http://ito-hi.blog.so-net.ne.jp/2006-09-05
+
 [6]統計的アプローチとディープ・ラーニング
 http://blogs.itmedia.co.jp/itsolutionjuku/2015/04/post_73.html
 
 +++
 
 [5]コンピュータ囲碁・モンテカルロ法の実践と理論・実践で学ぶ強化学習
-松原仁 編 美添一樹 山下宏著 共立出版
+松原仁 編、美添一樹、山下宏 著 共立出版
+
 [6]統計的学習の基礎・データマイニング・推論・予測
-Trevor Hastie, Robert Tibshirani, Jerome Friedman
-杉山 将、井手 剛、神嶌敏弘 共立出版
+Trevor Hastie, Robert Tibshirani, Jerome Friedman 著
+杉山 将、井手 剛、神嶌敏弘 翻訳 共立出版
+
 [7]強くなるロボティック・ゲームプレイヤーの作り方
 八谷大岳、杉山将 著 毎日コミュニケーションズ出版
 

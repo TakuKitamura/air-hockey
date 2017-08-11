@@ -293,6 +293,8 @@ AIとは
 
 ###### $$UCB=\overline{x_j}+C\sqrt{\log_e n/n_j}$$
 
+###### $$\overline{x_j}=その手の勝率$$
+
 +++
 
 ### 参考文献

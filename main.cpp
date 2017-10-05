@@ -5,14 +5,31 @@
 #include "calculation.h"
 #include "object.h"
 
-// タイマー間隔
-#define INTERVAL 1
+
+#define MM 20 // マレットの質量
+#define PM 10 // パックの質量
+
+#define MR 20 // マレット半径
+#define PR 15 // パック半径
+
+#define TLW 4 // テーブル線の幅
+#define TG 0.7 // ゴール幅
+
+#define E 0.5 // テーブルの壁と、マレットの反発係数
+#define MU 0.0001 // 動摩擦係数
+
+#define OX 194 // 横幅
+#define OY 366 // 縦幅
+
+#define INTERVAL 1 // タイマー間隔
 
 // void launchPack();
 void putPack();
 void updatePack();
 void updateMallet( double x, double y, double click_count );
 
+// 通常はグローバル変数は、関数に、引数として渡すのが望ましい
+// ただ、このプログラムでは、openglを用いていて、グラフィックリソースを操作するためグローバル変数を使う
 double pack_pos[2] = { 0.0, 0.0 };
 double mallet_pos[2] = { 0.0, 0.0 };
 double pack_now_v[2] = { 0.0, 0.0 };
@@ -186,17 +203,17 @@ void updatePack() {
     }
 
     // パックがゴールに入ったときの処理
-    if( pack_pos[1] == OY - ( PR + ( TLW / 2 ) ) ) {
-        if( pack_pos[0] <= 100 && pack_pos[0] >= -100 ) {
-            putPack();
-        }
-    }
-
-    else if( pack_pos[1] == -( OY - ( PR + ( TLW / 2 ) ) ) ) {
-        if( pack_pos[0] <= 100 && pack_pos[0] >= -100 ) {
-            putPack();
-        }
-    }
+    // if( pack_pos[1] == OY - ( PR + ( TLW / 2 ) ) ) {
+    //     if( pack_pos[0] <= TG * 100 && pack_pos[0] >= -( TG * 100 ) ) {
+    //         putPack();
+    //     }
+    // }
+    //
+    // else if( pack_pos[1] == -( OY - ( PR + ( TLW / 2 ) ) ) ) {
+    //     if( pack_pos[0] <= TG * 100 && pack_pos[0] >= -( TG * 100 ) ) {
+    //         putPack();
+    //     }
+    // }
 }
 
 void updateMallet( double x, double y, double click_count ) {
@@ -326,6 +343,8 @@ void mouse(int button, int state, int x, int y) {
             // マレットの位置を、クリックした座標に更新
             updateMallet( x - OX, -( y - OY ), 1 );
         }
+
+        printf("x = %d, y = %d\n",x - OX,y - OY);
     }
 
     // マウスの右ボタンが押されたとき
@@ -361,27 +380,113 @@ void timer( int value ) {
 
 }
 
+void resistPackTracs() {
+
+    int i = 0;
+    int j = 0;
+    int k = 0;
+
+    double formed_angle = 0.0;
+
+    pack_pos[1] = 0;
+
+    for( i = -OX + PR; i <= OX - PR; i++ ) {
+
+        pack_pos[0] = i;
+        // printf("pack_pos[0] = %f, pack_pos[1] = %f\n",pack_pos[0],pack_pos[1]);
+        for( j = 0; j <= OY; j++ ) {
+            formed_angle = math.formedAngle( -OX, 0, -OX, j );
+            pack_now_v[0] = PR * formed_angle;
+            pack_now_v[1] = PR * sqrt( 1.0 - pow( formed_angle, 2.0 ) );
+            printf("pack_now_v[0] = %f, pack_now_v[1] = %f\n",pack_now_v[0],pack_now_v[1]);
+            // while( pack_now_v[0] != 0.0 && pack_now_v[1] != 0.0 ) {
+            //     updatePack();
+            //     // printf("pack_now_v[0] = %f, pack_now_v[1] = %f\n",pack_now_v[0],pack_now_v[1]);
+            // }
+        }
+
+    }
+
+    for( i = -OX + PR; i <= OX - PR; i++ ) {
+
+        pack_pos[0] = i;
+        // printf("pack_pos[0] = %f, pack_pos[1] = %f\n",pack_pos[0],pack_pos[1]);
+        for( j = -OX; j <= OX; j++ ) {
+
+            if( j < 0 ) {
+
+            }
+
+            else {
+
+            }
+            // formed_angle = math.formedAngle(
+            pack_now_v[0] = j;
+            pack_now_v[1] = OY;
+            // while( pack_now_v[0] != 0.0 && pack_now_v[1] != 0.0 ) {
+            //     updatePack();
+            //     // printf("pack_now_v[0] = %f, pack_now_v[1] = %f\n",pack_now_v[0],pack_now_v[1]);
+            // }
+        }
+
+    }
+
+    for( i = -OX + PR; i <= OX - PR; i++ ) {
+
+        pack_pos[0] = i;
+        // printf("pack_pos[0] = %f, pack_pos[1] = %f\n",pack_pos[0],pack_pos[1]);
+        for( j = 0; j <= OY; j++ ) {
+            pack_now_v[0] = OX;
+            pack_now_v[1] = j;
+            // while( pack_now_v[0] != 0.0 && pack_now_v[1] != 0.0 ) {
+            //     updatePack();
+            //     // printf("pack_now_v[0] = %f, pack_now_v[1] = %f\n",pack_now_v[0],pack_now_v[1]);
+            // }
+        }
+
+    }
+}
+
+    // srand( ( unsigned ) time( NULL ) );
+    //
+    // pack_pos[0] = 0;
+    //
+    // pack_now_v[0] = 10;
+    // pack_now_v[1] = -10;
+
 int main(int argc, char *argv[]) {
 
-    // ウィンドウ表示に関し、必要な処理
-    glutInitWindowPosition(100, 100);
-    glutInitWindowSize( OX * 2.0 , OY * 2.0 );
+    int mode = 1;
 
-    glutCreateWindow(argv[0]);
-    glutDisplayFunc(display);
-    glutReshapeFunc(resize);
-    glutMouseFunc(mouse);
-    glutMotionFunc(motion);
+    if( mode == 0 ) {
 
-    // パックを配置
-    putPack();
+        // ウィンドウ表示に関し、必要な処理
+        glutInitWindowPosition(100, 100);
+        glutInitWindowSize( OX * 2.0 , OY * 2.0 );
 
-    // マレットの位置を初期化
-    updateMallet( 0.0 , -( OY / 2.0 ), 1 );
+        glutCreateWindow(argv[0]);
+        glutDisplayFunc(display);
+        glutReshapeFunc(resize);
+        glutMouseFunc(mouse);
+        glutMotionFunc(motion);
 
-    // timer関数を再帰的に呼び出す
-    glutTimerFunc( INTERVAL, timer, 0 );
-    glutMainLoop();
+        // パックを配置
+        putPack();
+
+        // マレットの位置を初期化
+        updateMallet( 0.0 , -( OY / 2.0 ), 1 );
+
+        // timer関数を再帰的に呼び出す
+        glutTimerFunc( INTERVAL, timer, 0 );
+        glutMainLoop();
+
+    }
+
+    else if( mode == 1 ) {
+
+        // パックを配置
+        resistPackTracs();
+    }
 
 
     return 0;

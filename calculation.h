@@ -57,9 +57,9 @@ class Math {
 public:
     double distanceBetweenTwoPoints( double xa, double ya, double xb, double yb );
 
-    // double innerProduct( double xa, double ya, double xb, double yb );
+    double innerProduct( double xa, double ya, double xb, double yb );
 
-    // double formedAngle( double xa, double ya, double xb, double yb );
+    double formedAngle( double xa, double ya, double xb, double yb );
 
     double syntheticVector ( double a, double b );
 

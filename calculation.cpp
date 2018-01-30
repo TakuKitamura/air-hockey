@@ -137,9 +137,9 @@ double Math::distanceBetweenTwoPoints( double xa, double ya, double xb, double y
     return sqrt( pow( xb - xa, 2.0 ) + pow( yb - ya, 2.0 ) );
 }
 
-// double Math::innerProduct( double xa, double ya, double xb, double yb ) {
-//     return ( xa * xb ) + ( ya * yb );
-// }
+double Math::innerProduct( double xa, double ya, double xb, double yb ) {
+    return ( xa * xb ) + ( ya * yb );
+}
 
 // ベクトルの大きさを求める
 double Math::syntheticVector ( double a, double b ) {
@@ -148,16 +148,16 @@ double Math::syntheticVector ( double a, double b ) {
 }
 
 // 0° <= θ <= 90°
-// double Math::formedAngle( double xa, double ya, double xb, double yb ) {
-//
-//     double formed_angle =
-//         Math::innerProduct( xa, ya, xb, yb ) /
-//             ( Math::syntheticVector( xa, ya ) *
-//                 Math::syntheticVector( xb , yb )
-//             );
-//
-//     return formed_angle < 0 ? -formed_angle : formed_angle;
-// }
+double Math::formedAngle( double xa, double ya, double xb, double yb ) {
+
+    double formed_angle =
+        Math::innerProduct( xa, ya, xb, yb ) /
+            ( Math::syntheticVector( xa, ya ) *
+                Math::syntheticVector( xb , yb )
+            );
+
+    return formed_angle < 0 ? -formed_angle : formed_angle;
+}
 
 // void Math::resolutionVector ( double vector_size, double cos_theta, double v[2], string axis) {
 //

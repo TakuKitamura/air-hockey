@@ -456,7 +456,7 @@ void resistPackTracs() {
 
 int main(int argc, char *argv[]) {
 
-    int mode = 1;
+    int mode = 0;
 
     if( mode == 0 ) {
 
